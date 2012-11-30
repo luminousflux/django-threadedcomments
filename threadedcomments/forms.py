@@ -17,11 +17,20 @@ class ThreadedCommentForm(CommentForm):
         super(ThreadedCommentForm, self).__init__(target_object, data=data,
             initial=initial)
 
+        if 'name' in self.fields:
+            del self.fields['name']
+        if 'email' in self.fields:
+            del self.fields['email']
+        if 'url' in self.fields:
+            del self.fields['url']
+
     def get_comment_model(self):
         return ThreadedComment
 
     def get_comment_create_data(self):
+        self.cleaned_data['name'] = ''
+        self.cleaned_data['url'] = ''
+        self.cleaned_data['email'] = ''
         d = super(ThreadedCommentForm, self).get_comment_create_data()
         d['parent_id'] = self.cleaned_data['parent']
         return d
-
